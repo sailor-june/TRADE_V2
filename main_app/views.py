@@ -10,7 +10,9 @@ from .models import Profile, Item, TradeOffer, User
 
 
 def home(request):
-    return render(request, "home.html")
+    profiles = Profile.objects.exclude(user=request.user)
+    context = {'profiles': profiles}
+    return render(request, 'home.html', context)
 
 
 @login_required

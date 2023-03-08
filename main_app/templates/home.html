@@ -1,6 +1,11 @@
 {%extends "base.html"%}
 {%block content%}
 
+<h2>Other Users:</h2>
+<ul>
+  {% for profile in profiles %}
+  <li><a href="{% url 'view_profile' profile.user.username %}">{{ profile.user.username }}</a></li>
+  {% endfor %}
+</ul>
 
-home
 {%endblock%}
