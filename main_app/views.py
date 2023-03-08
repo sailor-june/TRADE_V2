@@ -137,31 +137,53 @@ def send_trade_offer(request, item_id):
     user_inventory = Item.objects.filter(owner=request.user)
     return render(request, 'confirm_trade_offer.html', {'item': item, 'inventory':user_inventory})
 
-# @login_required
-# def trade_confirmation(request, item_id):
-#     item = get_object_or_404(Item, item_id=item_id)
-#     if request.method == 'POST':
-#         # create and save TradeOffer object
-#         trade_offer = TradeOffer(
-#             sender=request.user,
-#             receiver=item.owner,
-#             item_to_trade=item,
-#             item_requested=item_requested,
-#             message=request.POST.get('message')
-#         )
-#         trade_offer.save()
 
-#         # update trade offer with selected item to trade
-#         item_to_trade_id = request.POST.get('item_to_trade')
-#         item_to_trade = get_object_or_404(Item, item_id=item_to_trade_id)
-#         trade_offer.item_to_trade = item_to_trade
-#         trade_offer.save()
 
-#         # confirm trade
-#         messages.success(request, 'Trade offer sent!')
-#         return redirect('home')
-#     else:
-#         return render(request, 'confirm_trade_offer.html', {'item': item, 'inventory': request.user.profile.get_inventory_items()})
+def view_trade_offer(request, trade_offer_id):
+    trade_offer = get_object_or_404(TradeOffer, id=trade_offer_id)
+    
+    if request.user != trade_offer.receiver:
+        return render(request, 'error.html')
+    if request.method == 'POST':
+        if 'accept' in request.POST:
+            # switch items between users
+            sender = Profile.objects.get(user=trade_offer.sender)
+            sender_inventory = sender.inventory
+
+
+            receiver = Profile.objects.get(user=trade_offer.receiver)
+            receiver_inventory = receiver.inventory
+            
+            trade_offer.item_to_trade.owner = receiver.user
+            trade_offer.item_requested.owner = sender.user
+            
+            trade_offer.item_to_trade.save()
+            trade_offer.item_requested.save()
+
+            receiver_inventory.add(trade_offer.item_to_trade)
+            receiver_inventory.remove(trade_offer.item_requested)
+            sender_inventory.add(trade_offer.item_requested)
+            sender_inventory.remove(trade_offer.item_to_trade)
+
+
+
+            # mark trade offer as completed
+            trade_offer.accepted = True
+            trade_offer.save()
+
+            return redirect('home')
+        elif 'decline' in request.POST:
+            trade_offer.delete()
+            return redirect('home')
+
+    context = {
+        'trade_offer': trade_offer
+    }
+    
+    return render(request, 'view_trade_offer.html', context)
+
+
+
 def trade_confirmation(request, item_id):
     item = get_object_or_404(Item, item_id=item_id)
     inventory = Item.objects.filter(owner=request.user)
@@ -182,3 +204,9 @@ def trade_confirmation(request, item_id):
     else:
         form = TradeOfferForm()
     return render(request, 'confirm_trade_offer.html', {'form': form, 'inventory': inventory, 'item': item})
+
+@login_required
+def incoming_trade_offers(request):
+    trade_offers = TradeOffer.objects.filter(receiver=request.user, accepted=False)
+    context = {'trade_offers': trade_offers}
+    return render(request, 'incoming_trade_offers.html', context)

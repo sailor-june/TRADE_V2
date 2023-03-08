@@ -1,0 +1,14 @@
+{% extends 'base.html'%}
+{% block content%}
+<h1>Trade Offer Details</h1>
+<p><strong>From:</strong> {{ trade_offer.sender.username }}</p>
+<p><strong>Offered Item:</strong> {{ trade_offer.item_to_trade.name }}</p>
+<p><strong>Requested Item:</strong> {{ trade_offer.item_requested.name }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" name="accept" value="Accept">
+    <input type="submit" name="decline" value="Decline">
+  </form>
+
+{%endblock%}

@@ -30,3 +30,4 @@ class TradeOffer(models.Model):
     item_to_trade = models.ForeignKey(Item, on_delete=models.CASCADE)
     item_requested = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='received_trade_offers')
     message = models.CharField(max_length=100)
+    accepted = models.BooleanField(default=False)

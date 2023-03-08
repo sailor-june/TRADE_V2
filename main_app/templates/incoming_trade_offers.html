@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Incoming Trade Offers</h1>
+  <ul>
+    {% for trade_offer in trade_offers %}
+      <li><a href="{% url 'view_trade_offer' trade_offer.id %}">{{ trade_offer }}</a></li>
+    {% empty %}
+      <li>No incoming trade offers.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

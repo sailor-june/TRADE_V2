@@ -11,6 +11,9 @@ urlpatterns = [
     path("inventory/",views.inventory_view, name='inventory'),
     path("add_item/",views.add_item,name="add_item"),
     path('trade/<int:item_id>/', views.send_trade_offer, name='send_offer'),
-    path('<str:username>/', views.view_profile, name='view_profile'),
+    path('profile/<str:username>/', views.view_profile, name='view_profile'),
     path('trade/confirm/<int:item_id>', views.trade_confirmation, name='confirm_trade_offer'),
+    path('tradeoffer/<int:trade_offer_id>/', views.view_trade_offer, name='view_trade_offer'),
+    path('incoming-trade-offers/', views.incoming_trade_offers, name='incoming_trade_offers'),
+
 ]
