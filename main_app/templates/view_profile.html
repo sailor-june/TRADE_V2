@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ profile.user.username }}</h1>
+  <h2>Inventory:</h2>
+  <ul>
+    {% for item in profile.get_inventory_items %}
+    <li>{{ item.name }}
+      <form method="GET" action="{% url 'send_offer' item.item_id %}">
+        {% csrf_token %}
+
+        <input type="hidden" name="receiver_id" value="{{ profile.user.id }}">
+        <input type="hidden" name="item_requested" value="{{ item.item_id }}">
+        <button type="submit">Offer Trade</button>
+      </form>
+    </li>
+  {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ request.user.username }}'s Inventory</h1>
+{% if items %}
+<ul>
+{% for item in items %}
+    <li>{{ item.name }}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>Your inventory is empty!</p>
+{% endif %}
+<hr>
+<a href="{% url 'add_item' %}">Add Item</a>
+{% endblock %}

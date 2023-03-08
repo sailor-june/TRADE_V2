@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>confirm trade </h1>
+  <p>Your message:</p>
+  <p>{{ trade_offer.message }}</p>
+  <form method="POST" action="{% url 'confirm_trade_offer' item.item_id %}">
+    {% csrf_token %}
+    <div>
+      <p>You have Selected {{item}} </p>
+      <label for="id_item_to_trade">Select an item from your inventory to trade:</label>
+      <select name="item_to_trade" id="id_item_to_trade">
+        {% for item in inventory %}
+          <option value="{{ item.item_id }}">{{ item.name }}</option>
+        {% endfor %}
+      </select>
+      
+    </div>
+    <div>
+      <label for="id_message">Message:</label>
+      <textarea name="message" id="id_message"></textarea>
+    </div>
+    <button type="submit">Confirm Trade</button>
+  </form>
+{% endblock %}

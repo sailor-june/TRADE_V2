@@ -1,0 +1,38 @@
+user1_inventory = [
+    { 'id': 1, 'name': 'Item A' },
+    { 'id': 2, 'name': 'Item B' },
+    { 'id': 3, 'name': 'Item C' },
+]
+  
+user2_inventory = [
+    { 'id': 4, 'name': 'Item D' },
+    { 'id': 5, 'name': 'Item E' },
+    { 'id': 6, 'name': 'Item F' },
+]
+
+def swap_items(arr, index1, index2):
+    temp = arr[index1]
+    arr[index1] = arr[index2]
+    arr[index2] = temp
+
+def trade_items(user1_inventory, user2_inventory, item1_id, item2_id):
+    # Find the items in each user's inventory
+    user1_item_index = next((index for (index, d) in enumerate(user1_inventory) if d['id'] == item1_id), -1)
+    user2_item_index = next((index for (index, d) in enumerate(user2_inventory) if d['id'] == item2_id), -1)
+
+    # Make sure both items exist
+    if user1_item_index == -1 or user2_item_index == -1:
+        return False
+
+    # Swap the items in the inventories
+    swap_items(user1_inventory, user1_item_index, user2_item_index)
+    swap_items(user2_inventory, user2_item_index, user1_item_index)
+
+    return True
+
+success = trade_items(user1_inventory, user2_inventory, 1, 5)
+if success:
+    print('Trade successful!')
+else:
+    print('Trade failed!')
+s
